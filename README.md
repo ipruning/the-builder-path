@@ -23,3 +23,7 @@ uv add openai
 # 添加依赖到指定脚本
 uv add --script ./ch1/example_response_format_openai.py openai
 ```
+
+## TODO
+
+- 4090 能跑的 emb 微调脚本

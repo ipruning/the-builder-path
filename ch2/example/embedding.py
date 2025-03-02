@@ -89,6 +89,7 @@ def search_similar_texts(query_text: str, table_name="docs", limit=5):
 
 
 if __name__ == "__main__":
+    # Store/Embed time
     texts = [
         "LanceDB 是一个向量数据库，适用于存储和检索嵌入向量。",
         "OpenAI 提供了强大的文本嵌入模型，如 text-embedding-3-small。",
@@ -97,7 +98,8 @@ if __name__ == "__main__":
 
     create_and_insert_to_table(texts, "example_docs")
 
-    query = "如何向量搜索？"
+    # Query/Retrieval time
+    query = "Lance 向量搜索"
     results = search_similar_texts(query, "example_docs")
 
     print(f"查询：'{query}'")
