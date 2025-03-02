@@ -1,0 +1,5 @@
+[settings]
+env_file = ".env"
+
+[env]
+_.python.venv = { path = ".venv", create = true, uv_create_args = [] }
