@@ -1,0 +1,7 @@
+[project]
+name = "cursor-agentic"
+version = "0.1.0"
+description = "Demo of cursor agentic mode"
+readme = "README.md"
+requires-python = ">=3.13"
+dependencies = []
