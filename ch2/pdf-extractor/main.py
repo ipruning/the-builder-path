@@ -1,17 +1,21 @@
 """
 ## Changelog
+
+- [001] - [refactor] - Added logging initialization
 """
 
 import asyncio
 
 import streamlit as st
 
-from src.config import configure_logfire, get_service_name
+from src.config import configure_logging
 from src.ui import render_pdf_extractor, render_url_extractor
 
 
 async def main():
-    st.set_page_config(page_title=get_service_name())
+    configure_logging()
+
+    st.set_page_config(page_title="Demo")
 
     pdf_tab, url_tab = st.tabs(["PDF 提取", "URL 提取"])
 
@@ -28,5 +32,4 @@ async def main():
 
 
 if __name__ == "__main__":
-    configure_logfire()
     asyncio.run(main())

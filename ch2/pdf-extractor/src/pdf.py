@@ -1,15 +1,19 @@
 """
 ## Changelog
+
+- [001] - [refactor] - Replaced logfire with Python's standard logging module
 """
 
+import logging
 import os
 import tempfile
 from typing import Any, List, Tuple
 
 import fitz
-import logfire
 from google import genai
 from google.genai import types
+
+logger = logging.getLogger(__name__)
 
 DEFAULT_PROMPT = """
 请尽可能提取 PDF 中的信息，并遵守以下规则：
@@ -71,25 +75,25 @@ class PDFProcessor:
             with open(temp_pdf_path, "rb") as f:
                 uploaded_file = await async_client.files.upload(file=f, config=upload_config)
 
-            with logfire.span(f"PDF - processing {start_page + 1}-{end_page + 1}"):
-                response = await async_client.models.generate_content(
-                    model=self.model_id,
-                    config=types.GenerateContentConfig(
-                        system_instruction=prompt,
-                        max_output_tokens=self.max_tokens,
-                    ),
-                    contents=[uploaded_file],
-                )
+            logger.info(f"PDF - processing {start_page + 1}-{end_page + 1}")
+            response = await async_client.models.generate_content(
+                model=self.model_id,
+                config=types.GenerateContentConfig(
+                    system_instruction=prompt,
+                    max_output_tokens=self.max_tokens,
+                ),
+                contents=[uploaded_file],
+            )
 
-                if not response.text:
-                    raise Exception("Model IS RETURNING EMPTY RESPONSE")
+            if not response.text:
+                raise Exception("Model IS RETURNING EMPTY RESPONSE")
 
-                logfire.info(f"PDF - {start_page + 1}-{end_page + 1} - {len(response.text)} characters")
+            logger.info(f"PDF - {start_page + 1}-{end_page + 1} - {len(response.text)} characters")
 
-                return response.text
+            return response.text
 
         except Exception as e:
-            logfire.error(f"PDF - {start_page + 1}-{end_page + 1} - {str(e)}")
+            logger.error(f"PDF - {start_page + 1}-{end_page + 1} - {str(e)}")
             return f"PDF - {start_page + 1}-{end_page + 1} - {str(e)}"
 
         finally:
@@ -106,9 +110,9 @@ class PDFProcessor:
                 results.append(chunk_result)
 
         if not results:
-            logfire.error("PDF - failed")
+            logger.error("PDF - failed")
             return "PDF - failed"
 
-        logfire.info(f"PDF - {len(chunks)} chunks / {len(results)} processed")
+        logger.info(f"PDF - {len(chunks)} chunks / {len(results)} processed")
 
         return "\n\n---\n\n".join(results)

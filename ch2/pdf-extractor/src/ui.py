@@ -1,16 +1,20 @@
 """
 ## Changelog
+
+- [001] - [refactor] - Replaced logfire with Python's standard logging module
 """
 
 import json
+import logging
 from typing import Optional
 
-import logfire
 import streamlit as st
 from st_copy_to_clipboard import st_copy_to_clipboard
 
 from .jina import JinaExtractor
 from .pdf import DEFAULT_PROMPT, PDFProcessor
+
+logger = logging.getLogger(__name__)
 
 
 async def render_pdf_extractor() -> None:
@@ -50,13 +54,13 @@ async def render_pdf_extractor() -> None:
 
     if pdf_file:
         if st.button("提取", key="extract_pdf"):
-            with logfire.span(f"Processing - {pdf_file.name}"):
-                st.session_state["pdf_extraction"] = None
-                with st.spinner("正在提取中..."):
-                    processor = PDFProcessor()
-                    processor.chunk_size = chunk_size
-                    result_text = await processor.extract(pdf_file, prompt)
-                    st.session_state["pdf_extraction"] = result_text
+            logger.info(f"Processing - {pdf_file.name}")
+            st.session_state["pdf_extraction"] = None
+            with st.spinner("正在提取中..."):
+                processor = PDFProcessor()
+                processor.chunk_size = chunk_size
+                result_text = await processor.extract(pdf_file, prompt)
+                st.session_state["pdf_extraction"] = result_text
 
     col1, col2 = st.columns([0.9, 0.1])
     with col1:

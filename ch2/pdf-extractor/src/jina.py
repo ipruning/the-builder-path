@@ -1,14 +1,18 @@
 """
 ## Changelog
+
+- [001] - [refactor] - Replaced logfire with Python's standard logging module
 """
 
 import json
+import logging
 import os
 from typing import Any, Dict, Optional
 
-import logfire
 import requests
 from pydantic import BaseModel
+
+logger = logging.getLogger(__name__)
 
 
 class JinaResponse(BaseModel):
@@ -57,12 +61,12 @@ class JinaExtractor:
             data["instruction"] = instruction
 
         try:
-            with logfire.span(f"Processing URL: {url}"):
-                response = requests.post(self.base_url, headers=self.headers, data=json.dumps(data))
-                response.raise_for_status()
-                result = JinaResponse(text=response.text)
-                logfire.info(f"URL - successfully extracted {len(result.text)} characters")
-                return result
+            logger.info(f"Processing URL: {url}")
+            response = requests.post(self.base_url, headers=self.headers, data=json.dumps(data))
+            response.raise_for_status()
+            result = JinaResponse(text=response.text)
+            logger.info(f"URL - successfully extracted {len(result.text)} characters")
+            return result
         except requests.RequestException as e:
-            logfire.error(f"URL - API failed - {str(e)}")
+            logger.error(f"URL - API failed - {str(e)}")
             raise requests.RequestException(f"URL Extraction - API failed: {str(e)}")
