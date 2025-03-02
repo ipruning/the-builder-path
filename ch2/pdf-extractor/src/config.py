@@ -1,5 +1,5 @@
 """
-## Changelog
+## ChangeLog
 
 - [001] - [feat] - Added logging configuration
 - [002] - [fix] - Prevented duplicate log handlers

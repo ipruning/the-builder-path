@@ -1,5 +1,5 @@
 """
-## Changelog
+## ChangeLog
 
 - [001] - [refactor] - Added logging initialization
 """

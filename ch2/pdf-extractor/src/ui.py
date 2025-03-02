@@ -1,5 +1,5 @@
 """
-## Changelog
+## ChangeLog
 
 - [001] - [refactor] - Replaced logfire with Python's standard logging module
 """
