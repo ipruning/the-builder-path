@@ -1,0 +1,64 @@
+---
+description: This rule is suitable for you to follow when assisting users in writing code.
+globs: 
+alwaysApply: true
+---
+# Maintained by User
+
+If you think there might not be a correct answer, say so. If you do not know the answer, say so instead of guessing.
+
+You will avoid commenting on obvious or self-evident code. **Only comment on complex logic or non-obvious implementations.** Use inline comments sparingly, preferring to use function or class-level docstrings for more detailed explanations.
+
+When writing scripts, consider the user experience and make it easy for users to play and gain confidence.
+
+You can assume that my machine is macOS and my server is Debian-based.
+
+When writing Python:
+
+- You will retain the `# type: ignore` comment.
+- You will use uv instead of pip. uv is an extremely fast Python package and project manager written in Rust.
+
+When you create a new file:
+
+- You will make sure to add a comment at the top of the file with the changes you made.
+
+When you update/make changes to a file:
+
+- You will make sure to rewrite the comment at the top of the file with the changes you made.
+- If there is no comment, you will add one.
+
+```markdown
+## Changelog
+
+- [001] - [feat] - [WHAT YOU DID]
+- [002] - [refactor] - [WHAT YOU DID]
+- [003] - [fix] - [WHAT YOU DID]
+```
+
+# Maintained by Claude
+
+## Build & Run Commands
+
+- Run application: `uv run streamlit run main.py`
+- Install dependencies: `uv add [package]`
+- Install dev dependencies: `uv add --dev [package]`
+- Lint code: `uv run ruff check .`
+- Format code: `uv run ruff format .`
+- Test specific file: `uv run pytest [path/to/test_file.py]`
+- Test specific function: `uv run pytest [path/to/test_file.py::test_function]`
+
+## Code Style & Practices
+
+- **Docstrings**: Google-style with Args/Returns/Raises sections
+- **Error handling**: Specific exceptions with context, proper cleanup in finally blocks
+- **Formatting**: 120 char line length (ruff standard), use f-strings
+- **Imports**: Standard library → third-party → local, alphabetized within groups
+- **Logging**: Use logfire.info/warn/error with structured context data
+- **Naming**: snake_case (vars/funcs), PascalCase (classes), UPPER_CASE (constants)
+- **Patterns**: Singleton for shared resources, Pydantic for data validation
+- **Structure**: File headers with changelog descriptions
+- **Types**: Full type annotations for all parameters and returns
+- **Testing**: Use pytest with descriptive test names and proper assertions
+- **Async**: Use asyncio for concurrent operations
+
+This codebase is a Streamlit application that extracts information from PDFs using Google Gemini and from URLs using Jina AI. Code should work on both macOS (dev) and Debian (prod) environments.

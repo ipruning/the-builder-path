@@ -1,0 +1,17 @@
+[project]
+name = "time-mcp-server"
+readme = "README.md"
+version = "0.0.1"
+
+requires-python = ">=3.13"
+dependencies = ["mcp>=1.3.0", "pydantic>=2.10.6", "tzdata>=2025.1"]
+
+[project.scripts]
+time-mcp-server = "server:main"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["."]

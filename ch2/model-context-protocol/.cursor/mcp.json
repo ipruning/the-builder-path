@@ -1,0 +1,12 @@
+{
+  "mcpServers": {
+    "time": {
+      "command": "uvx",
+      "args": [
+        "--from",
+        "git+ssh://git@git.tongdiaotech.com/tongdiao/mcp#subdirectory=src/time-mcp-server",
+        "time-mcp-server"
+      ]
+    }
+  }
+}
