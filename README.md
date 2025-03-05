@@ -9,11 +9,11 @@
 
 ## Utils
 
-```shell
+```bash
 op inject -i .env.tpl -o .env
 ```
 
-```shell
+```bash
 # 运行脚本；如果这个目录有 pyproject.toml 文件，则会尝试更新 .venv 环境后运行；如果没有则会把 py 看成脚本来运行；
 uv run FILENAME.py
 
@@ -27,3 +27,4 @@ uv add --script ./ch1/example_response_format_openai.py openai
 ## TODO
 
 - 4090 能跑的 emb 微调脚本
+- great_tables

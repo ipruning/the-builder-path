@@ -1,11 +1,11 @@
 ---
 description: This rule is suitable for you to follow when assisting users in writing code.
-globs: 
+globs:
 alwaysApply: true
 ---
 ## Useful Commands
 
-```shell
+```bash
 # Get the schema of a database
 sqlite3 path/to/database.db '.schema'
 sqlite3 path/to/database.sqlite3 '.schema'
