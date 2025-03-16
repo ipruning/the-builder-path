@@ -7,6 +7,7 @@
 import asyncio
 
 import streamlit as st
+
 from src.config import configure_logging
 from src.ui import render_pdf_extractor, render_url_extractor
 
