@@ -1,0 +1,406 @@
+/* Nord color palette */
+:root {
+  --nord0: #2E3440;
+  /* Dark gray (polar night) */
+  --nord1: #3B4252;
+  --nord2: #434C5E;
+  --nord3: #4C566A;
+  --nord4: #D8DEE9;
+  /* Snow storm (light grays) */
+  --nord5: #E5E9F0;
+  --nord6: #ECEFF4;
+  --nord7: #8FBCBB;
+  /* Frost (blue-greens) */
+  --nord8: #88C0D0;
+  --nord9: #81A1C1;
+  --nord10: #5E81AC;
+  --nord11: #BF616A;
+  /* Aurora (accent colors) */
+  --nord12: #D08770;
+  --nord13: #EBCB8B;
+  --nord14: #A3BE8C;
+  --nord15: #B48EAD;
+}
+
+/* Clean, minimal styling with border */
+body {
+  background-color: #fff;
+  color: var(--nord0);
+}
+
+/* Main container with border */
+main.container {
+  max-width: 700px;
+  margin: 2rem auto;
+  padding: 1.5rem;
+}
+
+/* Form styling with border */
+.form-section {
+  margin-bottom: 0.25rem;
+  padding-bottom: 0.25rem;
+  width: 100%;
+}
+
+.form-group {
+  margin-bottom: 0.75rem;
+  width: 100%;
+}
+
+/* Make the bottom button form group more compact */
+.form-group:last-child {
+  margin-bottom: 0.25rem;
+}
+
+.form-label {
+  display: block;
+  margin-bottom: 0.5rem;
+  font-weight: 500;
+  color: var(--nord0);
+  width: 100%;
+}
+
+/* Common button style for all buttons */
+.common-btn-style {
+  height: 38px;
+  padding: 0 1rem;
+  background-color: var(--nord10);
+  color: white;
+  border: none;
+  border-radius: 0;
+  cursor: pointer;
+  font-size: 0.95rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color 0.2s;
+  width: 100%;
+}
+
+.common-btn-style:hover {
+  background-color: var(--nord9);
+}
+
+/* Unified gray style for file input button */
+input[type="file"]::file-selector-button {
+  height: 38px;
+  padding: 0 1rem;
+  background-color: var(--nord10);
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  margin-right: 1rem;
+  font-size: 0.95rem;
+  transition: background-color 0.2s;
+}
+
+input[type="file"]::file-selector-button:hover {
+  background-color: var(--nord9);
+}
+
+/* File input container styling */
+.file-input-container {
+  position: relative;
+  display: block;
+  width: 100%;
+}
+
+/* Hide the default file input */
+.file-input-container input[type="file"] {
+  width: 0.1px;
+  height: 0.1px;
+  opacity: 0;
+  overflow: hidden;
+  position: absolute;
+  z-index: -1;
+}
+
+/* Custom file input button */
+.file-input-label {
+  height: 38px;
+  padding: 0 1rem;
+  background-color: var(--nord10);
+  color: white;
+  border: none;
+  border-radius: 0;
+  cursor: pointer;
+  font-size: 0.95rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  transition: background-color 0.2s;
+}
+
+.file-input-label:hover {
+  background-color: var(--nord9);
+}
+
+/* File name display */
+.file-name {
+  margin-top: 0.25rem;
+  padding: 0.5rem;
+  font-size: 0.9rem;
+  color: var(--nord3);
+  word-break: break-all;
+  border: 1px solid var(--nord4);
+  border-radius: 0;
+  background-color: var(--nord6);
+  width: 100%;
+  box-sizing: border-box;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  min-height: 38px;
+  display: flex;
+  align-items: center;
+}
+
+/* Empty file name state */
+.file-name:empty {
+  display: none;
+}
+
+/* Extract button and progress bar styles */
+.btn-extract {
+  background-color: var(--nord5);
+  color: var(--nord0);
+  border: none;
+  border-radius: 0;
+  cursor: pointer;
+  width: 100%;
+  height: 38px;
+  padding: 0;
+  font-size: 0.95rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.btn-extract:hover {
+  background-color: var(--nord6);
+}
+
+.btn-extract:disabled {
+  background-color: var(--nord4);
+  cursor: not-allowed;
+}
+
+.btn-extract.processing {
+  cursor: progress;
+  background-color: var(--nord5);
+}
+
+.btn-extract.processing .progress-fill {
+  background-color: var(--nord9);
+}
+
+.btn-extract .progress-fill {
+  position: absolute;
+  left: 0;
+  top: 0;
+  height: 100%;
+  background-color: var(--nord10);
+  transition: width 0.3s ease-in-out;
+  z-index: 1;
+}
+
+.btn-extract .button-text {
+  position: relative;
+  z-index: 2;
+  color: var(--nord0);
+  font-weight: 500;
+  pointer-events: none;
+}
+
+/* Copy button */
+.copy-btn-container {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 0.75rem;
+}
+
+.copy-btn {
+  background-color: var(--nord10);
+  color: white;
+  border: none;
+  border-radius: 8px / 8px;
+  cursor: pointer;
+  height: 38px;
+  padding: 0 1rem;
+  font-size: 0.95rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.35rem;
+  transition: background-color 0.2s;
+}
+
+.copy-btn:hover {
+  background-color: var(--nord9);
+}
+
+/* Simplified language selection */
+.language-selection {
+  display: flex;
+  gap: 1.5rem;
+  margin-top: 0.25rem;
+}
+
+.language-option {
+  display: flex;
+  align-items: center;
+}
+
+.language-option label {
+  margin-left: 0.5rem;
+  color: var(--nord0);
+}
+
+/* Results section with border */
+.results-section {
+  display: none;
+  /* Hide by default */
+  margin-top: 0.25rem;
+  padding-top: 0.25rem;
+}
+
+.results-section.active {
+  display: block;
+  /* Show when has active class */
+}
+
+/* Processing container */
+.processing-container {
+  margin-bottom: 0.5rem;
+}
+
+.section-title {
+  margin-bottom: 1rem;
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: var(--nord0);
+}
+
+/* Processing status */
+.processing {
+  color: var(--nord3);
+  font-size: 0.95rem;
+  padding: 0.5rem 0;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.progress-container {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.progress-bar {
+  flex: 1;
+  height: 6px;
+  border-radius: 4px;
+  background-color: var(--nord4);
+  overflow: hidden;
+}
+
+.progress-bar .bar {
+  height: 100%;
+  background-color: var(--nord10);
+  transition: width 0.3s ease;
+}
+
+.progress-text {
+  min-width: 100px;
+  text-align: right;
+  color: var(--nord3);
+}
+
+/* Result content with border */
+.result {
+  white-space: pre-wrap;
+  background: var(--nord6);
+  border: 1px solid var(--nord4);
+  border-radius: 8px / 8px;
+  padding: 1rem;
+  font-size: 0.95rem;
+  line-height: 1.5;
+  max-height: 500px;
+  overflow-y: auto;
+  color: var(--nord0);
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Error message */
+.error {
+  color: var(--nord11);
+  padding: 0.75rem;
+  border: 1px solid var(--nord11);
+  border-radius: 8px / 8px;
+  background-color: rgba(191, 97, 106, 0.1);
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Upload status styling */
+.upload-status {
+  display: none;
+  margin-top: 0.25rem;
+  height: 38px;
+  padding: 0 1rem;
+  border-radius: 0;
+  font-size: 0.95rem;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.upload-status.uploading {
+  display: flex;
+  color: var(--nord0);
+  background-color: var(--nord5);
+  border: 1px solid var(--nord9);
+}
+
+.upload-status.success {
+  display: flex;
+  color: var(--nord0);
+  background-color: var(--nord14);
+  border: 1px solid var(--nord14);
+  opacity: 0.7;
+}
+
+.upload-status.error {
+  display: flex;
+  color: var(--nord0);
+  background-color: var(--nord11);
+  border: 1px solid var(--nord11);
+  opacity: 0.6;
+}
+
+/* Unified container styles */
+.file-name,
+.btn-extract,
+.copy-btn,
+.file-input-label,
+input[type="file"]::file-selector-button,
+.upload-status,
+.result,
+.error,
+.progress-bar {
+  border-radius: 0;
+  transition: all 0.25s cubic-bezier(0.645, 0.045, 0.355, 1);
+  box-sizing: border-box;
+}
+
+/* Smaller radius for progress bar */
+.progress-bar {
+  border-radius: 4px;
+  /* Keep smaller radius for progress bar */
+}

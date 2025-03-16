@@ -1,0 +1,133 @@
+---
+description: This rule is suitable for you to follow when assisting users in writing code.
+globs: 
+alwaysApply: true
+---
+# Maintained by User (Pls don't change this section)
+
+## General Rules
+
+If you think there might not be a correct answer, say so. If you do not know the answer, say so instead of guessing.
+
+You will avoid commenting on obvious or self-evident code. **Only comment on complex logic or non-obvious implementations.** Use inline comments sparingly, preferring to use function or class-level docstrings for more detailed explanations.
+
+When writing scripts, consider the user experience and make it easy for users to play and gain confidence.
+
+You can assume that my machine is macOS and my server is Debian-based.
+
+When writing Python:
+
+- You will retain the `# type: ignore` comment.
+- You will use uv instead of pip. uv is an extremely fast Python package and project manager written in Rust.
+
+When you create a new file:
+
+- You will make sure to add a comment at the top of the file with the changes you made.
+- You will run `fd --hidden .` and look at the directory tree.
+
+When you update/make changes to a file:
+
+- You will make sure to rewrite the comment at the top of the file with the changes you made.
+- If there is no comment, you will add one.
+
+```python
+"""
+## ChangeLog
+
+- 001 - AI - WHAT YOU DID
+- 002 - AI - WHAT YOU DID
+"""
+```
+
+```go
+// ChangeLog
+
+// 001 - AI - WHAT YOU DID
+// 002 - AI - WHAT YOU DID
+```
+
+## Python Best Practices
+
+你可以在单文件中声明 Python 依赖，这样就无须创建 pyproject 与 requirements.txt 很适合脚本。请使用 `uv run path/to/script.py`，请勿使用 `python path/to/script.py` 与 `pip install`。
+
+```bash
+# There are two methods to manage the dependencies of a single py file
+# Method 1: Modify the dependencies = [] in the py file
+# Method 2: Use --script to add
+uv add --script path/to/script.py rich
+```
+
+```python
+#!/usr/bin/env uv run
+# /// script
+# requires-python = ">=3.13"
+# dependencies = [
+#     "argcomplete",
+# ]
+# ///
+# PYTHON_ARGCOMPLETE_OK
+import argparse
+import sys
+
+import argcomplete
+
+"""
+## ChangeLog
+
+- 001 - AI - WHAT YOU DID
+- 002 - AI - WHAT YOU DID
+"""
+```
+
+你会用 logure 处理日志。
+
+```python
+#!/usr/bin/env uv run
+# /// script
+# requires-python = ">=3.13"
+# dependencies = [
+#     "loguru",
+# ]
+# ///
+from loguru import logger
+
+"""
+## ChangeLog
+
+- 001 - AI - WHAT YOU DID
+- 002 - AI - WHAT YOU DID
+"""
+
+logger.remove()
+logger.add(
+    sys.stderr,
+    format="<green>{time:YYYY-MM-DD HH:mm:ss}</green> | <level>{level}</level> | <level>{message}</level>",
+    level="INFO",
+    colorize=True,
+)
+```
+
+# Maintained by Claude Code (or Cursor Agent)
+
+## Build, Lint, and Test Commands
+
+- Run the app: `uv run streamlit run main.py`
+- Install dev dependencies: `uv pip install -e .[dev]`
+- Lint code: `uv run ruff check .`
+- Format code: `uv run ruff format .`
+- Type checking: `uv run pyright`
+- Run a single test: `uv run tests/test_key.py`
+- Run a specific test function: `uv run -m pytest tests/test_key.py::test_function_name -v`
+
+## Code Style Guidelines
+
+- Line length: 120 characters
+- Indentation: 4 spaces
+- Imports: Group standard library, third-party, then local imports with a blank line between groups
+- Types: Always use type annotations for function parameters and return values
+- Error handling: Use specific exception types with appropriate error messages
+- Logging: Use logfire/loguru with appropriate log levels
+- Naming: snake_case for variables/functions, PascalCase for classes
+- File headers: Include changelog at top of every file
+- Async: Use asyncio for asynchronous code
+- Environment: Use Pydantic for configuration validation

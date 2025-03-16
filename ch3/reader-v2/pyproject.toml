@@ -1,0 +1,40 @@
+[project]
+name = "reader"
+version = "0.1.0"
+description = "A tool for extracting information from PDF files and URLs"
+readme = "README.md"
+requires-python = ">=3.13"
+dependencies = [
+    "google-genai>=1.5.0",
+    "logfire>=3.8.1",
+    "pydantic>=2.10.6",
+    "pymupdf>=1.25.4",
+    "pyyaml>=6.0.2",
+    "httpx>=0.28.1",
+    "python-fasthtml>=0.12.4",
+]
+
+[dependency-groups]
+dev = [
+    "loguru>=0.7.3",
+    "pyright>=1.1.396",
+    "python-dotenv>=1.0.1",
+    "ruff>=0.11.0",
+]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/reader"]
+
+[tool.pyright]
+reportWildcardImportFromLibrary = "none"
+
+[tool.ruff]
+indent-width = 4
+line-length = 120
+
+[tool.ruff.lint]
+ignore = ["F403", "F405"]
