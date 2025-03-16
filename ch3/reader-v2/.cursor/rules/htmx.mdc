@@ -11,8 +11,6 @@ alwaysApply: false
 - Use `serve()` for running uvicorn (`if __name__ == "__main__"` is not needed since it's automatic)
 - When a title is needed with a response, use `Titled`; note that that already wraps children in `Container`, and already includes both the meta title as well as the H1 element.<docs><doc title="FastHTML quick start" desc="A brief overview of many FastHTML features"># Web Devs Quickstart
 
-
-
 ## Installation
 
 ``` bash
@@ -668,7 +666,6 @@ Fetch the profile using the profile table’s `email` primary key
 Line 4  
 Fill the form for display.
 
-
      <!doctype html>
      <html>
        <head>
@@ -706,7 +703,6 @@ We redirect the user back to their profile view
 
 Line 7  
 The display is of the profile form view showing the changes in data.
-
 
      <!doctype html>
      <html>
@@ -1515,7 +1511,6 @@ All other attributes available in htmx.
 
 </div>
 
-
 ## Configuration Reference {#config}
 
 Htmx has some configuration options that can be accessed either programmatically or declaratively.  They are
@@ -1657,10 +1652,10 @@ Or, 🌐 via CDN: `<script src="https://cdnjs.cloudflare.com/ajax/libs/surreal/1
   * `me("body")` Gets `<body>`
   * `me(".button")` Gets the first `<div class="button">...</div>`. To get all of them use `any()`
 * Select **one or more** elements as an array: `any(...)`
-  * Like `me()` but guaranteed to return an array (or empty array). 
+  * Like `me()` but guaranteed to return an array (or empty array).
   * `any(".foo")` ⭐ Get all matching elements.
   * Convert between arrays of elements and single elements: `any(me())`, `me(any(".something"))`
- 
+
 ### 🔥 DOM Functions
 
 * ♻️ All functions work on single elements or arrays of elements.
@@ -1692,7 +1687,9 @@ See: [Quick Start](mdc:#quick-start) and [Reference](mdc:#reference) and [No Sur
   * `me().attribute('active', true)`
 
 <a name="timelines"></a>
+
 #### Timeline animations without any libraries.
+
 ```html
 <div>I change color every second.
   <script>
@@ -1714,11 +1711,13 @@ See: [Quick Start](mdc:#quick-start) and [Reference](mdc:#reference) and [No Sur
   </script>
 </div>
 ```
+
 ```html
 <div>I fade out and remove myself.
   <script>me().on("click", ev => { me(ev).fadeOut() })</script>
 </div>
 ```
+
 ```html
 <div>Change color every second.
   <script>
@@ -1739,6 +1738,7 @@ See: [Quick Start](mdc:#quick-start) and [Reference](mdc:#reference) and [No Sur
   </script>
 </div>
 ```
+
 ```html
 <script>
   // Run immediately, for every <button> globally!
@@ -1747,20 +1747,26 @@ See: [Quick Start](mdc:#quick-start) and [Reference](mdc:#reference) and [No Sur
   })()
 </script>
 ```
+
 #### Array methods
+
 ```js
 any('button')?.forEach(...)
 any('button')?.map(...)
 ```
 
 ## <a name="reference"></a>👁️ Functions
+
 Looking for [DOM Selectors](mdc:#selectors)?
 Looking for stuff [we recommend doing in vanilla JS](mdc:#no-surreal)?
+
 ### 🧭 Legend
+
 * 🔗 Chainable off `me()` and `any()`
 * 🌐 Global shortcut.
 * 🔥 Runnable example.
 * 🔌 Built-in Plugin
+
 ### 👁️ At a glance
 
 * 🔗 `run`
@@ -1848,6 +1854,7 @@ Looking for stuff [we recommend doing in vanilla JS](mdc:#no-surreal)?
 ### <a name="plugin-included"></a>🔌 Built-in Plugins
 
 ### Effects
+
 Build effects with `me().styles({...})` with timelines using [CSS transitioned `await` or callbacks](mdc:#timelines).
 
 Common effects included:
@@ -1863,38 +1870,44 @@ Common effects included:
   * 🔥 `me().fadeIn()`
   * 🔥 `me().fadeIn(ev => { alert("Faded in!") }, 3000)` Over 3 seconds then call function.
 
-
 ## <a name="no-surreal"></a>⚪ No Surreal Needed
 
 More often than not, Vanilla JS is the easiest way!
 
 Logging
+
 * 🔥 `console.log()` `console.warn()` `console.error()`
 * Event logging: 🔥 `monitorEvents(me())` See: [Chrome Blog](mdc:https:/developer.chrome.com/blog/quickly-monitor-events-from-the-console-panel-2)
 
 Benchmarking / Time It!
+
 * 🔥 `console.time('name')`
 * 🔥 `console.timeEnd('name')`
 
 Text / HTML Content
+
 * 🔥 `me().textContent = "hello world"`
   * XSS Safe! See: [MDN](mdc:https:/developer.mozilla.org/en-US/docs/Web/API/Node/textContent)
 * 🔥 `me().innerHTML = "<p>hello world</p>"`
 * 🔥 `me().innerText = "hello world"`
 
 Children
+
 * 🔥 `me().children`
 * 🔥 `me().children.hidden = true`
 
 Append / Prepend elements.
+
 * 🔥 `me().prepend(new_element)`
 * 🔥 `me().appendChild(new_element)`
 * 🔥 `me().insertBefore(element, other_element.firstChild)`
 * 🔥 `me().insertAdjacentHTML("beforebegin", new_element)`
 
 AJAX (replace jQuery `ajax()`)
+
 * Use [htmx](mdc:https:/htmx.org) or [htmz](mdc:https:/leanrada.com/htmz) or [fetch()](mdc:https:/developer.mozilla.org/en-US/docs/Web/API/Fetch_API) or [XMLHttpRequest()](mdc:https:/developer.mozilla.org/en-US/docs/Web/API/XMLHttpRequest)
 * Example using `fetch()`
+
 ```js
 me().on("click", async event => {
   let e = me(event)
@@ -1909,7 +1922,9 @@ me().on("click", async event => {
   catch (error) { console.warn(`fetch(): ${error}`) }
 })
 ```
+
 * Example using `XMLHttpRequest()`
+
 ```js
 me().on("click", async event => {
   let e = me(event)
@@ -1927,7 +1942,7 @@ me().on("click", async event => {
 })
 ```
 
- ## 💎 Conventions & Tips
+## 💎 Conventions & Tips
 
 * Many ideas can be done in HTML / CSS (ex: dropdowns)
 * `_` = for temporary or unused variables. Keep it short and sweet!
@@ -1936,16 +1951,18 @@ me().on("click", async event => {
 * `f`, `fn` = function
 
 #### Scope functions and variables inside `<script>`
+
   * ⭐ Use a block `{ let note = "hi"; function hey(text) { alert(text) }; me().on('click', ev => { hey(note) }) }`
     * `let` and `function` is scoped within `{ }`
   * ⭐ Use `me()`
-    *  `me().hey = (text) => { alert(text) }`
-    *  `me().on('click', (ev) => { me(ev).hey("hi") })`
+    * `me().hey = (text) => { alert(text) }`
+    * `me().on('click', (ev) => { me(ev).hey("hi") })`
   * ⭐ Use an event `me().on('click', ev => { /* add and call function here */ })`
   * Use an inline module: `<script type="module">`
     * Note: `me()` in modules will not see `parentElement`, explicit selectors are required: `me(".mybutton")`
 
 #### Select a void element like `<input type="text" />`
+
 * Use: `me('-')` or `me('prev')` or `me('previous')`
   * 🔥 `<input type="text" /> <script>me('-').value = "hello"</script>`
   * Inspired by the CSS "next sibling" combinator `+` but in reverse `-`
@@ -1953,6 +1970,7 @@ me().on("click", async event => {
   * 🔥 `<form> <input type="text" n1 /> <script>me('[n1]', me()).value = "hello"</script> </form>`
 
 #### Ignore call chain when element is missing.
+
 * 🔥 `me("#i_dont_exist")?.classAdd('active')`
 * No warnings: 🔥 `me("#i_dont_exist", document, false)?.classAdd('active')`
 
@@ -1992,6 +2010,7 @@ Make an [issue](mdc:https:/github.com/gnat/surreal/issues) or [pull request](mdc
 * Shout out to [Umbrella](mdc:https:/umbrellajs.com), [Cash](mdc:https:/github.com/fabiospampinato/cash), [Zepto](mdc:https:/zeptojs.com)- Not quite as ergonomic. Requires build step to extend.
 
 ## 🌘 Future
+
 * Always more `example.html` goodies!
 * Automated browser testing perhaps with:
   * [Fava](mdc:https:/github.com/fabiospampinato/fava). See: https://github.com/avajs/ava/issues/24#issuecomment-885949036
@@ -2017,6 +2036,7 @@ Make an [issue](mdc:https:/github.com/gnat/surreal/issues) or [pull request](mdc
 ✨ Want to also scope your `<script>` tags? See our companion project [Surreal](mdc:https:/github.com/gnat/surreal)
 
 ## 👁️ How does it look?
+
 ```html
 <div>
     <style>
@@ -2026,11 +2046,12 @@ Make an [issue](mdc:https:/github.com/gnat/surreal/issues) or [pull request](mdc
     <button>I'm blue</button>
 </div>
 ```
+
 See the [Live Example](mdc:https:/gnat.github.io/css-scope-inline/example.html)! Then [view source](mdc:https:/github.com/gnat/css-scope-inline/blob/main/example.html).
 
 ## 🌘 How does it work?
 
-This uses `MutationObserver` to monitor the DOM, and the moment a `<style>` tag is seen, it scopes the styles to whatever the parent element is. No flashing or popping. 
+This uses `MutationObserver` to monitor the DOM, and the moment a `<style>` tag is seen, it scopes the styles to whatever the parent element is. No flashing or popping.
 
 This method also leaves your existing styles untouched, allowing you to mix and match at your leisure.
 
@@ -2072,8 +2093,11 @@ Use whatever you'd like, but there's a few advantages with this approach over Ta
 * Try tools like- Auto complete styles: [VSCode](mdc:https:/code.visualstudio.com) or [Sublime](mdc:https:/packagecontrol.io/packages/Emmet)
 
 ## 👁️ CSS Scope Inline vs Tailwind CSS Showdowns
+
 ### Basics
+
 Tailwind verbosity goes up with more child elements.
+
 ```html
 <div>
     <style>
@@ -2105,12 +2129,15 @@ Tailwind verbosity goes up with more child elements.
 ```
 
 ### CSS variables and child elements
+
 At first glance, **Tailwind Example 2** looks very promising! Exciting ...but:
+
 * 🔴 **Every child style requires an explicit selector.**
   * Tailwinds' shorthand advantages sadly disappear.
   * Any more child styles added in Tailwind will become longer than vanilla CSS.
   * This limited example is the best case scenario for Tailwind.
 * 🔴 Not visible on github: **no highlighting for properties and units** begins to be painful.
+
 ```html
 <!doctype html>
 <html>
@@ -2161,10 +2188,11 @@ At first glance, **Tailwind Example 2** looks very promising! Exciting ...but:
     </body>
 </html>
 ```
+
 ## 🔎 Technical FAQ
+
 * Why do you use `querySelectorAll()` and not just process the `MutationObserver` results directly?
   * This was indeed the original design; it will work well up until you begin recieving subtrees (ex: DOM swaps with [htmx](mdc:https:/htmx.org), ajax, jquery, etc.) which requires walking all subtree elements to ensure we do not miss a `<style>`. This unfortunately involves re-scanning thousands of repeated elements. This is why `querySelectorAll()` ends up the performance (and simplicity) winner.</doc><doc title="Starlette quick guide" desc="A quick overview of some Starlette features useful to FastHTML devs."># 🌟 Starlette Quick Manual
-
 
 2020-02-09
 
