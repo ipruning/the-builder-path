@@ -1,5 +1,3 @@
-#!/usr/bin/env uvx modal run
-import os
 import secrets
 import subprocess
 import time
@@ -7,15 +5,15 @@ from pathlib import Path
 
 import modal
 
-MARIMO_NOTEBOOK_PATH = Path(os.getenv("MARIMO_NOTEBOOK_PATH", ""))
+MARIMO_NOTEBOOK_PATH = Path(__file__).parent / "notebook.py"
 
-if not MARIMO_NOTEBOOK_PATH.exists():
-    raise ValueError("MARIMO_NOTEBOOK_PATH IS NOT SET / DOES NOT EXIST")
+APP_NAME = Path(__file__).stem
 
 app = modal.App(
+    name=APP_NAME,
     image=modal.Image.debian_slim()
     .pip_install("uv")
-    .add_local_file(MARIMO_NOTEBOOK_PATH, remote_path="/root/main.py")
+    .add_local_file(MARIMO_NOTEBOOK_PATH, remote_path="/root/notebook.py"),
 )
 
 TOKEN = secrets.token_urlsafe(16)
@@ -37,7 +35,7 @@ def run_marimo(timeout: int):
                 str(PORT),
                 "--token-password",
                 TOKEN,
-                "/root/main.py",
+                "/root/notebook.py",
             ],
         )
 

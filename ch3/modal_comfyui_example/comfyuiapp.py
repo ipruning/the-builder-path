@@ -45,7 +45,10 @@ image = image.add_local_file(
     Path(__file__).parent / "workflow_api.json", "/root/workflow_api.json"
 )
 
-app = modal.App(name=APP_NAME, image=image)
+app = modal.App(
+    name=APP_NAME,
+    image=image,
+)
 
 
 @app.function(
