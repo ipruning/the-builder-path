@@ -1,0 +1,7 @@
+[project]
+name = "pocketflow-template"
+version = "0.1.0"
+description = "PocketFlow Template"
+readme = "README.md"
+requires-python = ">=3.13.2"
+dependencies = ["openai>=1.68.2", "pocketflow>=0.0.1"]
