@@ -5,8 +5,8 @@ description = "A tool for extracting information from PDF files and URLs"
 readme = "README.md"
 requires-python = ">=3.13"
 dependencies = [
-    "google-genai>=1.5.0",
-    "logfire>=3.8.1",
+    "google-genai>=1.7.0",
+    "logfire>=3.9.0",
     "pydantic>=2.10.6",
     "pymupdf>=1.25.4",
     "pyyaml>=6.0.2",
@@ -17,9 +17,9 @@ dependencies = [
 [dependency-groups]
 dev = [
     "loguru>=0.7.3",
-    "pyright>=1.1.396",
+    "pyright>=1.1.397",
     "python-dotenv>=1.0.1",
-    "ruff>=0.11.0",
+    "ruff>=0.11.2",
 ]
 
 [build-system]
