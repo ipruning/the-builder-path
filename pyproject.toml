@@ -6,6 +6,7 @@ readme = "README.md"
 requires-python = ">=3.13"
 dependencies = [
     "huggingface-hub>=0.29.3",
+    "marimo>=0.11.26",
     "modal>=0.73.116",
     "openai>=1.68.2",
     "pyright>=1.1.397",
