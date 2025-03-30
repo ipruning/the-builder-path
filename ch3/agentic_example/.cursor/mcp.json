@@ -1,0 +1,12 @@
+{
+  "mcpServers": {
+    "time": {
+      "command": "uvx",
+      "args": [
+        "--from",
+        "./src/time-mcp-server",
+        "time-mcp-server"
+      ]
+    }
+  }
+}
