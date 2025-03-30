@@ -9,5 +9,6 @@ uv venv
 uv pip install fast-agent-mcp
 
 # 运行智能体
+# 在环境变量中应配置了 OPENAI_API_KEY 和 ANTHROPIC_API_KEY
 uv run agent.py
 ```
