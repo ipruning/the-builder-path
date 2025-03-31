@@ -14,13 +14,13 @@
 # 如果网络环境不好请选择国内镜像源
 export UV_INDEX_URL=https://pypi.tuna.tsinghua.edu.cn/simple
 
-uvx --from git+ssh://git@git.tongdiaotech.com/tongdiao/mcp#subdirectory=src/time-mcp-server time-mcp-server
+uvx --from ./src/time-mcp-server time-mcp-server
 ```
 
 ### Using Docker
 
 ```bash
-# 命令默认在仓库根目录执行。
+# 命令默认在仓库根目录执行
 # 构建镜像
 docker build -t time-mcp-server src/time-mcp-server
 
