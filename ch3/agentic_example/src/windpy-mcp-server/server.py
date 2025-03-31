@@ -1,182 +1,201 @@
 import json
-from datetime import datetime, timedelta
 from enum import Enum
 from typing import Sequence
-from zoneinfo import ZoneInfo
 
 from mcp.server import Server
 from mcp.server.stdio import stdio_server
-from mcp.shared.exceptions import McpError
 from mcp.types import EmbeddedResource, ImageContent, TextContent, Tool
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 
 
-class TimeTools(str, Enum):
-    GET_CURRENT_TIME = "get_current_time"
-    CONVERT_TIME = "convert_time"
+class KnownDataSource(str, Enum):
+    SHANGHAI_POWER = "S0048389"  # 上海电力装机量
+    WUXI_POWER = "S0048390"  # 无锡电力装机量
 
 
-class TimeResult(BaseModel):
-    timezone: str
-    datetime: str
-    is_dst: bool
+class WindEdbInput(BaseModel):
+    """
+    用于拉取 edb 数据的输入结构
+    可以根据实际需要再添加更多字段
+    如 start_date、周期、步长、条件等
+    """
+
+    code: str = Field(
+        ..., description="Wind EDB 数据源代码，比如 'S0048389' 表示上海电力装机量"
+    )
+    indicators: str = Field("ED-10Y", description="Wind EDB 指标，如 'ED-10Y'")
+    end_date: str = Field("2024-12-28", description="结束日期，格式为 YYYY-MM-DD")
+    fill: str = Field("Previous", description="填充方式，如 'Fill=Previous'")
+    max_rows: int = Field(
+        50, description="最多返回多少行。如果实际数据超过该数，会进行截断。"
+    )
 
 
-class TimeConversionResult(BaseModel):
-    source: TimeResult
-    target: TimeResult
-    time_difference: str
+class WindTools(str, Enum):
+    LIST_DATA_SOURCES = "list_data_sources"
+    FETCH_EDB_DATA = "fetch_edb_data"
 
 
-class TimeConversionInput(BaseModel):
-    source_tz: str
-    time: str
-    target_tz_list: list[str]
+class WindServer:
+    """
+    这里的"server"仅做逻辑封装演示，便于在 call_tool 中调用。
+    如果无法导入 WindPy，会自动进入 mock 模式。
+    """
 
-
-def get_local_tz(local_tz_override: str | None = None) -> ZoneInfo:
-    if local_tz_override:
-        return ZoneInfo(local_tz_override)
-
-    # Get local timezone from datetime.now()
-    tzinfo = datetime.now().astimezone(tz=None).tzinfo
-    if tzinfo is not None:
-        tz_name = str(tzinfo)
-
-        # Handle common abbreviated timezone names
-        tz_mapping = {
-            "EST": "America/New_York",
-            "CST": "America/Chicago",
-            "MST": "America/Denver",
-            "PST": "America/Los_Angeles",
-            "EDT": "America/New_York",
-            "CDT": "America/Chicago",
-            "MDT": "America/Denver",
-            "PDT": "America/Los_Angeles",
-        }
-
-        if tz_name in tz_mapping:
-            return ZoneInfo(tz_mapping[tz_name])
-
+    def __init__(self):
+        self.is_mock_mode = False
         try:
-            return ZoneInfo(tz_name)
-        except Exception:
-            # Fallback to UTC if the timezone name is not recognized
-            return ZoneInfo("UTC")
+            from WindPy import w
 
-    raise McpError("Could not determine local timezone - tzinfo is None")  # type: ignore
+            self.w = w
+            self.w.start()
+        except ImportError:
+            self.is_mock_mode = True
+            print("Warning: WindPy not available, running in mock mode")
 
+    def list_data_sources(self) -> list[dict]:
+        """
+        列出我们可用的数据源信息。例如上海电力装机量、无锡电力装机量...
+        可以返回更多描述信息。
+        """
+        return [
+            {
+                "code": KnownDataSource.SHANGHAI_POWER.value,
+                "description": "上海电力装机量（S0048389）",
+            },
+            {
+                "code": KnownDataSource.WUXI_POWER.value,
+                "description": "无锡电力装机量（S0048390）",
+            },
+            # ...
+        ]
 
-def get_zoneinfo(timezone_name: str) -> ZoneInfo:
-    try:
-        return ZoneInfo(timezone_name)
-    except Exception as e:
-        raise McpError(f"Invalid timezone: {str(e)}")  # type: ignore
+    def fetch_edb_data(self, input_data: WindEdbInput) -> dict:
+        """
+        调用 WindPy 的 w.edb(...) 获取数据并返回。
+        如果在 mock 模式下，返回模拟数据。
+        """
+        if not self.is_mock_mode:
+            # 实际调用 Wind API
+            error_code, df = self.w.edb(
+                input_data.code,
+                input_data.indicators,
+                input_data.end_date,
+                input_data.fill,
+                usedf=True,
+            )
 
-
-class TimeServer:
-    def get_current_time(self, timezone_name: str) -> TimeResult:
-        """Get current time in specified timezone"""
-        timezone = get_zoneinfo(timezone_name)
-        current_time = datetime.now(timezone)
-
-        return TimeResult(
-            timezone=timezone_name,
-            datetime=current_time.isoformat(timespec="seconds"),
-            is_dst=bool(current_time.dst()),
-        )
-
-    def convert_time(
-        self, source_tz: str, time_str: str, target_tz: str
-    ) -> TimeConversionResult:
-        """Convert time between timezones"""
-        source_timezone = get_zoneinfo(source_tz)
-        target_timezone = get_zoneinfo(target_tz)
-
-        try:
-            parsed_time = datetime.strptime(time_str, "%H:%M").time()
-        except ValueError:
-            raise ValueError("Invalid time format. Expected HH:MM [24-hour format]")
-
-        now = datetime.now(source_timezone)
-        source_time = datetime(
-            now.year,
-            now.month,
-            now.day,
-            parsed_time.hour,
-            parsed_time.minute,
-            tzinfo=source_timezone,
-        )
-
-        target_time = source_time.astimezone(target_timezone)
-        source_offset = source_time.utcoffset() or timedelta()
-        target_offset = target_time.utcoffset() or timedelta()
-        hours_difference = (target_offset - source_offset).total_seconds() / 3600
-
-        if hours_difference.is_integer():
-            time_diff_str = f"{hours_difference:+.1f}h"
+            if error_code != 0:
+                return {
+                    "error_code": error_code,
+                    "message": f"Failed to fetch data from Wind, error_code={error_code}",
+                    "data": None,
+                }
         else:
-            # For fractional hours like Nepal's UTC+5:45
-            time_diff_str = f"{hours_difference:+.2f}".rstrip("0").rstrip(".") + "h"
+            # Mock 模式：返回模拟数据
+            import numpy as np
+            import pandas as pd
 
-        return TimeConversionResult(
-            source=TimeResult(
-                timezone=source_tz,
-                datetime=source_time.isoformat(timespec="seconds"),
-                is_dst=bool(source_time.dst()),
-            ),
-            target=TimeResult(
-                timezone=target_tz,
-                datetime=target_time.isoformat(timespec="seconds"),
-                is_dst=bool(target_time.dst()),
-            ),
-            time_difference=time_diff_str,
-        )
+            # 根据不同的数据源生成不同的模拟数据
+            if input_data.code == KnownDataSource.SHANGHAI_POWER.value:
+                # 上海电力装机量模拟数据
+                base_value = 25000  # 基准值（兆瓦）
+                dates = pd.date_range("2023-01-01", periods=80, freq="M")
+                # 生成一个带有季节性波动和增长趋势的数据
+                seasonal = np.sin(np.linspace(0, 4 * np.pi, 80)) * 1000  # 季节性波动
+                trend = np.linspace(0, 2000, 80)  # 增长趋势
+                values = (
+                    base_value + seasonal + trend + np.random.randn(80) * 500
+                )  # 添加随机噪声
+            elif input_data.code == KnownDataSource.WUXI_POWER.value:
+                # 无锡电力装机量模拟数据
+                base_value = 15000  # 基准值（兆瓦）
+                dates = pd.date_range("2023-01-01", periods=80, freq="M")
+                # 生成一个带有季节性波动和增长趋势的数据
+                seasonal = np.sin(np.linspace(0, 4 * np.pi, 80)) * 600  # 季节性波动
+                trend = np.linspace(0, 1500, 80)  # 增长趋势
+                values = (
+                    base_value + seasonal + trend + np.random.randn(80) * 300
+                )  # 添加随机噪声
+            else:
+                # 其他数据源返回随机数据
+                dates = pd.date_range("2023-01-01", periods=80, freq="M")
+                values = np.random.randn(80) * 1000 + 10000
+
+            # 创建 DataFrame
+            df = pd.DataFrame(
+                {
+                    "VALUE": values,
+                },
+                index=dates,
+            )
+
+        # 处理数据截断
+        full_count = len(df)
+        if full_count > input_data.max_rows:
+            df_truncated = df.head(input_data.max_rows).copy()
+            truncated = True
+        else:
+            df_truncated = df
+            truncated = False
+
+        # 序列化 DataFrame
+        df_json = df_truncated.to_json(orient="split", date_format="iso")
+
+        result = {
+            "error_code": 0,
+            "rows_count": full_count,
+            "truncated": truncated,
+            "data": json.loads(df_json),  # json 可读
+            "is_mock": self.is_mock_mode,  # 添加标记表明是否是模拟数据
+        }
+        return result
 
 
-async def serve(local_timezone: str | None = None) -> None:
-    server = Server("mcp-time")
-    time_server = TimeServer()
-    local_tz = str(get_local_tz(local_timezone))
+async def serve() -> None:
+    server = Server("wind-mcp-server")
+    wind_server = WindServer()
 
     @server.list_tools()
     async def list_tools() -> list[Tool]:
-        """List available time tools."""
+        """声明 Wind MCP 服务器有哪些可用工具。"""
         return [
             Tool(
-                name=TimeTools.GET_CURRENT_TIME.value,
-                description="Get current time in a specific timezones",
+                name=WindTools.LIST_DATA_SOURCES.value,
+                description="列出可用的数据源代码，如上海/无锡等",
                 inputSchema={
                     "type": "object",
-                    "properties": {
-                        "timezone": {
-                            "type": "string",
-                            "description": f"IANA timezone name (e.g., 'America/New_York', 'Europe/London'). Use '{local_tz}' as local timezone if no timezone provided by the user.",
-                        }
-                    },
-                    "required": ["timezone"],
+                    "properties": {},  # 无输入
                 },
             ),
             Tool(
-                name=TimeTools.CONVERT_TIME.value,
-                description="Convert time between timezones",
+                name=WindTools.FETCH_EDB_DATA.value,
+                description="调用 w.edb(...) 拉取指定 code 的数据表，返回（截断后）json",
                 inputSchema={
                     "type": "object",
                     "properties": {
-                        "source_timezone": {
+                        "code": {
                             "type": "string",
-                            "description": f"Source IANA timezone name (e.g., 'America/New_York', 'Europe/London'). Use '{local_tz}' as local timezone if no source timezone provided by the user.",
+                            "description": "Wind EDB 数据源代码，比如 'S0048389'",
                         },
-                        "time": {
+                        "indicators": {
                             "type": "string",
-                            "description": "Time to convert in 24-hour format (HH:MM)",
+                            "description": "Wind EDB 指标，如 'ED-10Y'",
                         },
-                        "target_timezone": {
+                        "end_date": {
                             "type": "string",
-                            "description": f"Target IANA timezone name (e.g., 'Asia/Tokyo', 'America/San_Francisco'). Use '{local_tz}' as local timezone if no target timezone provided by the user.",
+                            "description": "结束日期，格式 YYYY-MM-DD",
+                        },
+                        "fill": {
+                            "type": "string",
+                            "description": "填充方式，如 Fill=Previous",
+                        },
+                        "max_rows": {
+                            "type": "number",
+                            "description": "返回多少行后截断",
                         },
                     },
-                    "required": ["source_timezone", "time", "target_timezone"],
+                    "required": ["code"],
                 },
             ),
         ]
@@ -185,37 +204,27 @@ async def serve(local_timezone: str | None = None) -> None:
     async def call_tool(
         name: str, arguments: dict
     ) -> Sequence[TextContent | ImageContent | EmbeddedResource]:
-        """Handle tool calls for time queries."""
         try:
             match name:
-                case TimeTools.GET_CURRENT_TIME.value:
-                    timezone = arguments.get("timezone")
-                    if not timezone:
-                        raise ValueError("Missing required argument: timezone")
+                case WindTools.LIST_DATA_SOURCES.value:
+                    # 不需要输入
+                    datas = wind_server.list_data_sources()
+                    return [TextContent(type="text", text=json.dumps(datas, indent=2))]
 
-                    result = time_server.get_current_time(timezone)
+                case WindTools.FETCH_EDB_DATA.value:
+                    # 将 arguments 转为 pydantic
+                    input_data = WindEdbInput(**arguments)
+                    result_dict = wind_server.fetch_edb_data(input_data)
+                    return [
+                        TextContent(type="text", text=json.dumps(result_dict, indent=2))
+                    ]
 
-                case TimeTools.CONVERT_TIME.value:
-                    if not all(
-                        k in arguments
-                        for k in ["source_timezone", "time", "target_timezone"]
-                    ):
-                        raise ValueError("Missing required arguments")
-
-                    result = time_server.convert_time(
-                        arguments["source_timezone"],
-                        arguments["time"],
-                        arguments["target_timezone"],
-                    )
                 case _:
                     raise ValueError(f"Unknown tool: {name}")
 
-            return [
-                TextContent(type="text", text=json.dumps(result.model_dump(), indent=2))
-            ]
-
         except Exception as e:
-            raise ValueError(f"Error processing mcp-server-time query: {str(e)}")
+            # 避免信息泄露，或可以返回错误信息
+            return [TextContent(type="text", text=f"Error: {str(e)}")]
 
     options = server.create_initialization_options()
     async with stdio_server() as (read_stream, write_stream):
@@ -223,17 +232,10 @@ async def serve(local_timezone: str | None = None) -> None:
 
 
 def main():
-    """MCP Time Server - Time and timezone conversion functionality for MCP"""
-    import argparse
+    """Wind MCP Server - 从 WindPy 拉取 EDB 数据的示例。"""
     import asyncio
 
-    parser = argparse.ArgumentParser(
-        description="give a model the ability to handle time queries and timezone conversions"
-    )
-    parser.add_argument("--local-timezone", type=str, help="Override local timezone")
-
-    args = parser.parse_args()
-    asyncio.run(serve(args.local_timezone))
+    asyncio.run(serve())
 
 
 if __name__ == "__main__":

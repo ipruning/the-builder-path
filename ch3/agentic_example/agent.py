@@ -5,7 +5,7 @@ from mcp_agent.core.fastagent import FastAgent
 fast = FastAgent("FastAgent Example")
 
 
-@fast.agent(instruction="You are a helpful AI Agent", servers=["time"])
+@fast.agent(instruction="You are a helpful AI Agent", servers=["time", "windpy"])
 async def main():
     async with fast.run() as agent:
         await agent()

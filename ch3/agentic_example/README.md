@@ -15,5 +15,7 @@ uv run agent.py
 
 ```powershell
 D:\Python\Python312\python.exe -m pip install mcp pydantic tzdata
+D:\Python\Python312\python.exe -m pip install tzdata
 D:\Python\Python312\python.exe 'src\time-mcp-server\server.py' --help
+D:\Python\Python312\python.exe 'src\windpy-mcp-server\server.py' --help
 ```

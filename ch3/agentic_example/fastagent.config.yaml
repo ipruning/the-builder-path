@@ -45,3 +45,11 @@ mcp:
                     "/Users/alex/Developer/the-builder-path/ch3/agentic_example/src/time-mcp-server",
                     "time-mcp-server",
                 ]
+        windpy:
+            command: "uvx"
+            args:
+                [
+                    "--from",
+                    "/Users/alex/Developer/the-builder-path/ch3/agentic_example/src/windpy-mcp-server",
+                    "windpy-mcp-server",
+                ]
